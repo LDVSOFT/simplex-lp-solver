@@ -1,0 +1,12 @@
+apply plugin: 'kotlin-platform-js'
+
+dependencies {
+    expectedBy project(':common')
+
+    compile libraries.kotlin_stdlib.js
+    compile libraries.kotlin_logging.js
+}
+
+[compileKotlin2Js,compileTestKotlin2Js]*.configure {
+    kotlinOptions.moduleKind = 'umd'
+}

@@ -1,0 +1,40 @@
+allprojects {
+    group 'net.ldvsoft.simplex-lp-solver'
+    version '0.0.SNAPSHOT'
+
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+
+        ext.versions = [
+                kotlin: '1.2.61',
+                kotlin_logging: '1.5.9'
+        ]
+
+        ext.gradle_plugins = [
+                kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        ]
+
+        dependencies {
+            classpath gradle_plugins.kotlin
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    ext.libraries = [
+            kotlin_stdlib: [
+                    common: "org.jetbrains.kotlin:kotlin-stdlib-common:${versions.kotlin}",
+                    jvm:    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}",
+                    js:     "org.jetbrains.kotlin:kotlin-stdlib-js:${versions.kotlin}"
+            ],
+            kotlin_logging: [
+                    common: "io.github.microutils:kotlin-logging-common:${versions.kotlin_logging}",
+                    jvm:    "io.github.microutils:kotlin-logging:${versions.kotlin_logging}",
+                    js:     "io.github.microutils:kotlin-logging-js:${versions.kotlin_logging}",
+            ]
+    ]
+}

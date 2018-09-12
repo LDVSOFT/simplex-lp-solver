@@ -1,0 +1,6 @@
+apply plugin: 'kotlin-platform-common'
+
+dependencies {
+    compile libraries.kotlin_stdlib.common
+    compile libraries.kotlin_logging.common
+}

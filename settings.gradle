@@ -1,0 +1,14 @@
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "kotlin-platform-jvm") {
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
+            }
+        }
+    }
+}
+rootProject.name = 'simplex-lp-solver'
+
+include('common')
+include('jvm')
+include('js')

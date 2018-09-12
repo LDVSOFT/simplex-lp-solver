@@ -1,0 +1,12 @@
+apply plugin: 'kotlin-platform-jvm'
+
+dependencies {
+    expectedBy project(':common')
+
+    compile libraries.kotlin_stdlib.jvm
+    compile libraries.kotlin_logging.jvm
+}
+
+[compileKotlin,compileTestKotlin]*.configure {
+    kotlinOptions.jvmTarget = "1.8"
+}
