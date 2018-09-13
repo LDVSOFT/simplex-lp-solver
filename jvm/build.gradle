@@ -8,8 +8,14 @@ dependencies {
 
     testCompile libraries.kotlin_test.jvm_junit5
     testCompile libraries.junit5.params
+
+    testRuntimeOnly libraries.junit5.engine
 }
 
 [compileKotlin,compileTestKotlin]*.configure {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+test {
+    useJUnitPlatform()
 }
