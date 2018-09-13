@@ -9,7 +9,9 @@ allprojects {
 
         ext.versions = [
                 kotlin: '1.2.61',
-                kotlin_logging: '1.5.9'
+                kotlin_logging: '1.5.9',
+
+                junit5: '5.2.0'
         ]
 
         ext.gradle_plugins = [
@@ -35,6 +37,16 @@ allprojects {
                     common: "io.github.microutils:kotlin-logging-common:${versions.kotlin_logging}",
                     jvm:    "io.github.microutils:kotlin-logging:${versions.kotlin_logging}",
                     js:     "io.github.microutils:kotlin-logging-js:${versions.kotlin_logging}",
+            ],
+
+            kotlin_test: [
+                    common:             "org.jetbrains.kotlin:kotlin-test-common:${versions.kotlin}",
+                    common_annotations: "org.jetbrains.kotlin:kotlin-test-annotations-common:${versions.kotlin}",
+                    jvm:                "org.jetbrains.kotlin:kotlin-test:${versions.kotlin}",
+                    jvm_junit5:         "org.jetbrains.kotlin:kotlin-test-junit5:${versions.kotlin}"
+            ],
+            junit5: [
+                    params: "org.junit.jupiter:junit-jupiter-params:${versions.junit5}"
             ]
     ]
 }

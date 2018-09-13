@@ -5,6 +5,9 @@ dependencies {
 
     compile libraries.kotlin_stdlib.jvm
     compile libraries.kotlin_logging.jvm
+
+    testCompile libraries.kotlin_test.jvm_junit5
+    testCompile libraries.junit5.params
 }
 
 [compileKotlin,compileTestKotlin]*.configure {
