@@ -16,17 +16,13 @@ interface LpExpressionLike {
 
 /**
  * Variable in linear programming problem.
- * @param name Name of the variable. Must be unique and not start with underscore.
+ * @param name Name of the variable.
  * @param canBeNegative Can this variable assume negative values. It's not recommended to add (x >= 0)
  * constraint if it's known to always be such and let this property to false.
  *
  * Implements LpExpressionLike interface so it can be used as a standalone linear expression.
  */
 data class LpVariable(val name: String, val canBeNegative: Boolean = false): LpExpressionLike {
-    init {
-        check(!name.startsWith('_')) { "Variables starting with underscore are reserved." }
-    }
-
     override val terms: Map<LpVariable, Double>
         get() = mapOf(this to 1.0)
     override val free: Double
