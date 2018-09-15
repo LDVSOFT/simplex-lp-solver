@@ -1,0 +1,33 @@
+image: stevenalexander/java-selenium-phantomjs  
+
+stages:
+  - build-test
+  - deploy
+
+before_script:
+  - export GRADLE_USER_HOME=/cache/.gradle
+
+cache:
+  # global gradle cache
+  paths:
+  - $GRADLE_USER_HOME/wrapper
+  - $GRADLE_USER_HOME/caches
+
+gradle-build:
+  stage: build-test
+  script:
+  - ./gradlew build
+  artifacts:
+    paths:
+    - "**/build"
+    reports:
+      junit:
+      - jvm/build/test-results/test/TEST-*.xml
+      - js/build/reports/karma.xml
+
+#gradle-publish:
+#  stage: deploy
+#  only:
+#  - deploy
+#  script:
+#  - ./gradlew publish
