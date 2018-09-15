@@ -1,10 +1,11 @@
 apply plugin: 'kotlin-platform-jvm'
 
+archivesBaseName = 'simplex-lp-solver-jvm'
+
 dependencies {
     expectedBy project(':common')
 
     compile libraries.kotlin_stdlib.jvm
-    compile libraries.kotlin_logging.jvm
 
     testCompile libraries.kotlin_test.jvm_junit5
     testCompile libraries.junit5.params
@@ -15,6 +16,8 @@ dependencies {
 [compileKotlin,compileTestKotlin]*.configure {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+setupTestPacks(project)
 
 test {
     useJUnitPlatform()

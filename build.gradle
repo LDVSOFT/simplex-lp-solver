@@ -5,21 +5,30 @@ allprojects {
     buildscript {
         repositories {
             mavenCentral()
+            jcenter()
+            maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
         }
 
         ext.versions = [
                 kotlin: '1.2.61',
                 kotlin_logging: '1.5.9',
+                kotlin_frontend: '0.0.37',
 
-                junit5: '5.2.0'
+                logback: '1.2.3',
+                junit5: '5.2.0',
+
+                node: '6.1.0',
+                karma: '3.0.0'
         ]
 
         ext.gradle_plugins = [
-                kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+                kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
+                kotlin_frontend: "org.jetbrains.kotlin:kotlin-frontend-plugin:${versions.kotlin_frontend}"
         ]
 
         dependencies {
             classpath gradle_plugins.kotlin
+            classpath gradle_plugins.kotlin_frontend
         }
     }
 
@@ -37,17 +46,26 @@ allprojects {
                     common: "io.github.microutils:kotlin-logging-common:${versions.kotlin_logging}",
                     jvm:    "io.github.microutils:kotlin-logging:${versions.kotlin_logging}",
                     js:     "io.github.microutils:kotlin-logging-js:${versions.kotlin_logging}",
+
+                    jvm_logback: "ch.qos.logback:logback-classic:${versions.logback}"
             ],
 
             kotlin_test: [
                     common:             "org.jetbrains.kotlin:kotlin-test-common:${versions.kotlin}",
                     common_annotations: "org.jetbrains.kotlin:kotlin-test-annotations-common:${versions.kotlin}",
                     jvm:                "org.jetbrains.kotlin:kotlin-test:${versions.kotlin}",
-                    jvm_junit5:         "org.jetbrains.kotlin:kotlin-test-junit5:${versions.kotlin}"
+                    jvm_junit5:         "org.jetbrains.kotlin:kotlin-test-junit5:${versions.kotlin}",
+                    js:                 "org.jetbrains.kotlin:kotlin-test-js:${versions.kotlin}"
             ],
             junit5: [
                     params: "org.junit.jupiter:junit-jupiter-params:${versions.junit5}",
                     engine: "org.junit.jupiter:junit-jupiter-engine:${versions.junit5}"
             ]
     ]
+
+    ext.setupTestPacks = { Project project -> project.configure(project) {
+        test {
+            environment("LP_TEST_PACKS", "${rootProject.rootDir}/tests")
+        }
+    } }
 }

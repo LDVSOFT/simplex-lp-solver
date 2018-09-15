@@ -1,0 +1,3 @@
+[submodule "tests/burunduk1"]
+	path = tests/burunduk1
+	url = git@gitlab.com:LDVSOFT/simplex-lp-solver_burunduk1-tests.git

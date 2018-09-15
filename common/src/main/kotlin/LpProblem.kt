@@ -34,7 +34,7 @@ data class LpVariable(val name: String, val canBeNegative: Boolean = false): LpE
  * in linear programming problem.
  * @see LpExpressionLike
  */
-data class LpExpression(
+class LpExpression(
         override val terms: Map<LpVariable, Double>,
         override val free: Double = 0.0
 ): LpExpressionLike
@@ -54,7 +54,7 @@ enum class LpConstraintSign {
  * @param sign sign that tights expression and constant
  * @param constantValue constant
  */
-data class LpConstraint(val f: LpExpressionLike, val sign: LpConstraintSign, val constantValue: Double)
+class LpConstraint(val f: LpExpressionLike, val sign: LpConstraintSign, val constantValue: Double)
 
 /**
  * Required optimization of function in linear programming problem.
@@ -80,7 +80,7 @@ data class LpProblem(
         val function: LpFunction
 ) {
     init {
-        check(constraints.all { it.f.terms.keys.all { it in variables } }) {
+        check(constraints.all { c -> c.f.terms.keys.all { it in variables } }) {
             "Variables used in constraints must be present in variables list"
         }
         check(function.f.terms.keys.all { it in variables }) {

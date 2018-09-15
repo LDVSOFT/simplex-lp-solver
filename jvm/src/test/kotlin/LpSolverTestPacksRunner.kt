@@ -5,12 +5,14 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.opentest4j.TestAbortedException
 import java.nio.charset.Charset
-import java.nio.file.*
-import java.nio.file.attribute.BasicFileAttributes
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
 import java.util.stream.Stream
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.streams.asSequence
 import kotlin.streams.asStream
 import kotlin.test.assertTrue
 
@@ -61,30 +63,29 @@ class LpSolverTestPacksRunner {
             @Suppress("JAVA_CLASS_ON_COMPANION")
             val loader = javaClass.classLoader
 
-            val testsSequence = loader.getResources("lp-test-pack.zip")
-                    .toList()
-                    .flatMap { resourceUrl ->
-                        val resourcePath = Paths.get(resourceUrl.toURI())
-                        FileSystems.newFileSystem(resourcePath, null).use { fs ->
-                            val target = Files.createTempDirectory("lp-test-pack")
-                            val results = mutableListOf<TestDescription>()
-                            fs.rootDirectories.forEach { fsRoot ->
-                                Files.walkFileTree(fsRoot, object : SimpleFileVisitor<Path>() {
-                                    override fun visitFile(path: Path, attrs: BasicFileAttributes?): FileVisitResult {
-                                        val relPath = fsRoot.relativize(path)
-                                        val targetPath = target.resolve(relPath.toString())
-                                        Files.copy(path, targetPath)
-                                        results += TestDescription(resourcePath.toString(), relPath.fileName.toString(), targetPath)
-                                        return super.visitFile(path, attrs)
-                                    }
-                                })
+            val testsPath = System.getenv("LP_TEST_PACKS").orEmpty()
 
-                            }
-                            results
-                        }
-                    }.asSequence()
-            return (sequenceOf(TestDescription()) + testsSequence).asStream()
+            val tests = testsPath
+                    .split(':')
+                    .asSequence()
+                    .flatMap { testsPathEntry ->
+                        val testsPathEntryPath = Paths.get(testsPathEntry)
+                        check(Files.isDirectory(testsPathEntryPath))
+                        Files.walk(testsPathEntryPath, 2)
+                                .asSequence()
+                                .filter { Files.isRegularFile(it) }
+                                .filterNot {
+                                    it.parent.fileName.toString().startsWith(".")
+                                            || it.fileName.toString().startsWith(".")
+                                }
+                                .map { testPath ->
+                                    val pack = testPath.parent.fileName.toString()
+                                    val case = testPath.fileName.toString()
+                                    TestDescription(pack, case, testPath)
+                                }
+                    }
 
+            return tests.asStream()
         }
     }
 }

@@ -1,6 +1,10 @@
 apply plugin: 'kotlin-platform-common'
 
+archivesBaseName = 'simplex-lp-solver-common'
+
 dependencies {
     compile libraries.kotlin_stdlib.common
-    compile libraries.kotlin_logging.common
+
+    testCompile libraries.kotlin_test.common_annotations
+    testCompile libraries.kotlin_test.common
 }

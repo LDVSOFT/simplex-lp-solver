@@ -29,15 +29,15 @@ open class LpExpressionBuilder {
     }
 
     operator fun LpExpressionLike.unaryPlus() = this
-    operator fun LpExpressionLike.unaryMinus() = LpExpression(terms.mapValues { (_, v) -> v }, -free)
+    operator fun LpExpressionLike.unaryMinus() = LpExpression(terms.mapValues { (_, v) -> -v }, -free)
 
     operator fun LpExpressionLike.plus(that: LpExpressionLike)
             = LpExpression(this.terms.merge(that.terms, Double::plus), this.free + that.free)
-    operator fun LpExpression.plus(that: Double) = this + that.asE
+    operator fun LpExpressionLike.plus(that: Double) = this + that.asE
     operator fun Double.plus(that: LpExpressionLike) = this.asE + that
 
     operator fun LpExpressionLike.minus(that: LpExpressionLike) = this + (-that)
-    operator fun LpExpression.minus(that: Double) = this - that.asE
+    operator fun LpExpressionLike.minus(that: Double) = this - that.asE
     operator fun Double.minus(that: LpExpressionLike) = this.asE - that
 
     operator fun LpExpressionLike.times(that: Double)
@@ -62,16 +62,16 @@ class LpConstraintBuilder : LpExpressionBuilder() {
     infix fun Double.equals(that: LpExpressionLike) = this.asE equals that
 }
 
-inline fun lpProblem(block: LpProblemBuilder.() -> Unit): LpProblem = LpProblemBuilder().apply(block).build()
+inline fun lpProblem(block: LpProblemBuilder.() -> Unit): LpProblem
+        = LpProblemBuilder().apply(block).build()
 
-inline fun LpProblemBuilder.constraint(block: LpConstraintBuilder.() -> LpConstraint) { addConstraint(LpConstraintBuilder().block()) }
+inline fun LpProblemBuilder.constraint(block: LpConstraintBuilder.() -> LpConstraint)
+        = LpConstraintBuilder().block().also { addConstraint(it) }
 
-inline fun LpProblemBuilder.function(optimization: LpFunctionOptimization, block: LpExpressionBuilder.() -> LpExpressionLike) {
-    setFunction(LpFunction(LpExpressionBuilder().block(), optimization))
-}
-
-inline fun LpProblemBuilder.maximize(block: LpExpressionBuilder.() -> LpExpressionLike) = function(LpFunctionOptimization.MAXIMIZE, block)
-inline fun LpProblemBuilder.minimize(block: LpExpressionBuilder.() -> LpExpressionLike) = function(LpFunctionOptimization.MININIZE, block)
+inline fun LpProblemBuilder.maximize(block: LpExpressionBuilder.() -> LpExpressionLike)
+        = LpFunction(LpExpressionBuilder().block(), LpFunctionOptimization.MAXIMIZE).also { function = it }
+inline fun LpProblemBuilder.minimize(block: LpExpressionBuilder.() -> LpExpressionLike)
+        = LpFunction(LpExpressionBuilder().block(), LpFunctionOptimization.MININIZE).also { function = it }
 
 fun LpProblemBuilder.variable(name: String, canBeNegative: Boolean = false): LpVariable
         = LpVariable(name, canBeNegative).also { addVariable(it) }
